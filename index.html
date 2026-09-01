@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALKYRIE-9 // MANUAL TÉCNICO ESPACIAL</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.5'><path d='M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.71 1.26-2 1.26-2l-4.26-1.26z'/><path d='M12 15l-3-3 7.35-7.35c.78-.78 2.05-.78 2.83 0v0c.78.78.78 2.05 0 2.83L12 15z'/></svg>">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="brand">AEROX</div>
+        <div class="sys-tag">MODEL: V-9 3D</div>
+    </header>
+
+    <main class="main-layout">
+        
+        <section class="canvas-section">
+            <div id="canvas3d"></div>
+            <span class="drag-hint">ARRASTRA PARA INSPECCIONAR EN 3D</span>
+        </section>
+
+        <section class="info-section">
+            <div class="hero-info">
+                <h1>VALKYRIE-9</h1>
+                <p>MANUAL TÉCNICO DE NAVEGACIÓN Y FÍSICA EN EL VACÍO ESPACIAL</p>
+            </div>
+
+            <div class="accordion-container">
+                
+                <div class="acc-item">
+                    <button class="acc-header">
+                        <span class="title">01 / PROPULSIÓN POR REACCIÓN EN EL VACÍO</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="acc-content">
+                        <div class="acc-inner">
+                            <p>Un error común es pensar que un cohete necesita "empujarse contra el aire" para avanzar. En el vacío absoluto no hay atmósfera, por lo que las naves dependen exclusivamente de la <strong>Tercera Ley de Newton</strong> (Acción y Reacción).</p>
+                            <p>El motor quema combustible en la cámara de combustión generando gas a altísima presión. Al acelerar este gas a velocidades hiperbalísticas a través de la tobera hacia atrás (Acción), se genera una fuerza opuesta de la misma magnitud que impulsa la nave hacia adelante (Reacción).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acc-item">
+                    <button class="acc-header">
+                        <span class="title">02 / SISTEMA DE CONTROL DE ACTITUD (RCS)</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="acc-content">
+                        <div class="acc-inner">
+                            <p>Las alas y alerones tradicionales no funcionan fuera de la atmósfera porque no hay masa de aire que genere sustentación. Para maniobrar, la nave utiliza el <strong>RCS (Reaction Control System)</strong>.</p>
+                            <p>Consiste en una red de micro-propulsores repartidos estratégicamente por el fuselaje que liberan breves ráfagas de gas comprimido. Esto permite modificar la orientación de la nave en 3 ejes:</p>
+                            <ul>
+                                <li><strong>Cabeceo (Pitch):</strong> Inclinación de la nariz hacia arriba o abajo.</li>
+                                <li><strong>Guiñada (Yaw):</strong> Giro lateral hacia la izquierda o derecha.</li>
+                                <li><strong>Alabeo (Roll):</strong> Rotación completa sobre su propio eje central.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acc-item">
+                    <button class="acc-header">
+                        <span class="title">03 / LA FÍSICA DE ORBITAR: CAÍDA LIBRE PERPETUA</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="acc-content">
+                        <div class="acc-inner">
+                            <p>Estar en órbita no significa "estar libre de gravedad". A la altura de la Estación Espacial Internacional (aprox. 400 km), la gravedad terrestre sigue siendo del <strong>90%</strong> de la superficie.</p>
+                            <p>Una nave se mantiene en órbita porque viaja horizontalmente a una velocidad extrema (aprox. <em>27,600 km/h</em>). La nave cae continuamente hacia la Tierra debido a la gravedad, pero viaja tan rápido de lado que la curvatura de la Tierra "se aleja" a la misma velocidad que cae, entrando en un estado continuo de caída libre sin impacto.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acc-item">
+                    <button class="acc-header">
+                        <span class="title">04 / INERCIA Y CONSERVACIÓN DEL MOMENTO</span>
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="acc-content">
+                        <div class="acc-inner">
+                            <p>En el espacio no existe fricción molecular apreciable que frene a un vehículo. De acuerdo con la <strong>Primera Ley de Newton</strong>, un objeto en movimiento conserva su velocidad y trayectoria a menos que actúe una fuerza externa sobre él.</p>
+                            <p>Esto permite a las naves apagar sus motores principales tras realizar la maniobra de inyección orbital y continuar navegando a miles de kilómetros por hora sin consumir combustible adicional.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
