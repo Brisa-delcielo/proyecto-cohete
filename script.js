@@ -1,4 +1,4 @@
-// 1. INICIALIZACIÓN DEL CANVAS EN PANTALLA COMPLETA
+// 1. INICIALIZACIÓN DEL CANVAS EN PANTALLA COMPLETA CON PIXEL RATIO OPTIMIZADO
 const container = document.getElementById('canvas3d');
 const canvas = document.createElement('canvas');
 container.appendChild(canvas);
@@ -6,18 +6,32 @@ const ctx = canvas.getContext('2d');
 
 let width, height;
 let stars = [];
+let isMobile = false;
 
 function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
+    isMobile = window.innerWidth < 768;
+    
+    // Limitar el pixelRatio en móviles para garantizar 60 FPS suaves
+    const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
+    
+    width = canvas.width = window.innerWidth * dpr;
+    height = canvas.height = window.innerHeight * dpr;
+    
+    // Escalar el contexto para mantener las coordenadas limpias
+    ctx.scale(dpr, dpr);
+    
+    // Ancho/Alto lógico para cálculos 3D
+    width = window.innerWidth;
+    height = window.innerHeight;
+    
     initStars();
 }
 window.addEventListener('resize', resize);
 
-// GENERACIÓN DE CAMPO DE ESTRELLAS EN TODA LA PANTALLA
+// GENERACIÓN DE CAMPO DE ESTRELLAS ADAPTATIVO
 function initStars() {
     stars = [];
-    const starCount = 160; // Mayor densidad para toda la pantalla
+    const starCount = isMobile ? 70 : 150; // Reducimos estrellas en móviles para rendimiento
     for (let i = 0; i < starCount; i++) {
         stars.push({
             x: Math.random() * width,
@@ -70,7 +84,7 @@ const faces = [
     [4, 14, 7], [7, 14, 10], [4, 10, 14]
 ];
 
-// 3. CONTROLES Y ARRASTRE SOBRE EL ÁREA DEL VISOR
+// 3. CONTROLES Y ARRASTRE TÁCTIL Y MOUSE
 const canvasSection = document.querySelector('.canvas-section');
 let rotX = 0.15;
 let rotY = 0.4;
@@ -91,12 +105,13 @@ window.addEventListener('mousemove', (e) => {
     lastMouse = { x: e.clientX, y: e.clientY };
 });
 
+// Eventos táctiles optimizados
 canvasSection.addEventListener('touchstart', (e) => {
     if (e.touches.length === 1) {
         isDragging = true;
         lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     }
-});
+}, { passive: true });
 
 window.addEventListener('touchend', () => { isDragging = false; });
 
@@ -105,13 +120,13 @@ window.addEventListener('touchmove', (e) => {
     rotY += (e.touches[0].clientX - lastMouse.x) * 0.008;
     rotX += (e.touches[0].clientY - lastMouse.y) * 0.008;
     lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-});
+}, { passive: true });
 
-// 4. BUCLE DE RENDERIZADO (ESTRELLAS EN TODA LA PANTALLA + NAVE CENTRADA)
+// 4. BUCLE DE RENDERIZADO FLUIDO
 function render() {
     ctx.clearRect(0, 0, width, height);
 
-    // RENDERIZAR ESTRELLAS DE FONDO
+    // DIBUJAR ESTRELLAS
     stars.forEach(star => {
         star.alpha += star.speed;
         if (star.alpha > 1 || star.alpha < 0) {
@@ -125,17 +140,24 @@ function render() {
 
     if (!isDragging) rotY += 0.006;
 
-    // Calcular centro dinámico en función del contenedor de la nave
+    // Centro del área de inspección 3D
     const rect = canvasSection.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
 
-    // Transformación 3D
+    // ESCALA ADAPTATIVA: 65% del tamaño normal si estamos en móvil
+    const modelScale = isMobile ? 0.65 : 1.0;
+
+    // Transformación y proyección 3D
     const projected = vertices.map(v => {
-        let x1 = v.x * Math.cos(rotY) + v.z * Math.sin(rotY);
-        let z1 = -v.x * Math.sin(rotY) + v.z * Math.cos(rotY);
-        let y2 = v.y * Math.cos(rotX) - z1 * Math.sin(rotX);
-        let z2 = v.y * Math.sin(rotX) + z1 * Math.cos(rotX);
+        let vx = v.x * modelScale;
+        let vy = v.y * modelScale;
+        let vz = v.z * modelScale;
+
+        let x1 = vx * Math.cos(rotY) + vz * Math.sin(rotY);
+        let z1 = -vx * Math.sin(rotY) + vz * Math.cos(rotY);
+        let y2 = vy * Math.cos(rotX) - z1 * Math.sin(rotX);
+        let z2 = vy * Math.sin(rotX) + z1 * Math.cos(rotX);
 
         const fov = 380;
         const scale = fov / (fov + z2 + 100);
@@ -146,7 +168,7 @@ function render() {
         };
     });
 
-    // Ordenamiento por profundidad Z
+    // Ordenamiento de caras por profundidad Z (Painter's Algorithm)
     const sortedFaces = faces.map(f => {
         const p1 = projected[f[0]];
         const p2 = projected[f[1]];
@@ -156,7 +178,7 @@ function render() {
         return { face: f, z: zAvg };
     }).sort((a, b) => b.z - a.z);
 
-    // Renderizar caras de la nave
+    // Dibujado de caras
     sortedFaces.forEach(item => {
         const f = item.face;
         const p1 = projected[f[0]];
